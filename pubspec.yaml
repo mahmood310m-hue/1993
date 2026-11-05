@@ -1,40 +1,28 @@
-name: Build Android APK
 
-on:
-  push:
-    branches: [ "main" ]
-  workflow_dispatch:
+name: kauthar_school
+description: Kauthar Private School Application
+publish_to: 'none'
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
+version: 1.0.0+1
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.19.0'
-          channel: 'stable'
-          cache: true
+environment:
+  sdk: '^3.13.0'
 
-      - name: Install Dependencies
-        run: flutter pub get
+dependencies:
+  flutter:
+    sdk: flutter
 
-      - name: Build APK Release
-        run: flutter build apk --release
-        environment:
-         sdk: '>=3.0.0 <4.0.0'
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
-          environment:
-          sdk: '>=3.3.0 <4.0.0'
+  cupertino_icons: ^1.0.8
+  supabase_flutter: ^2.8.0
+  shared_preferences: ^2.3.5
+  provider: ^6.1.2
+  intl: ^0.20.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
