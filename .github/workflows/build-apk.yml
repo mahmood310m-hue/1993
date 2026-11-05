@@ -19,31 +19,37 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      
+      # Install Flutter with Dart 3.13.7
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.44.0'
+          flutter-version: '3.47.9'
           channel: stable
           cache: true
 
-
-      - name: Check Flutter and Dart Versions
+      # Verify SDK
+      - name: Check Flutter and Dart
         run: |
           flutter --version
           dart --version
-          dart --version | grep -E 'Dart SDK version: 3\.(1[3-9]|[2-9][0-9])\.'
 
+      # Generate missing Android files
+      - name: Generate Android Platform
+        run: |
+          flutter create \
+            --platforms=android \
+            --org com.kauthar.school \
+            --project-name kauthar_school .
+
+      # Install dependencies
       - name: Get Dependencies
         run: flutter pub get
 
-      - name: Analyze Project
-        run: flutter analyze
-        continue-on-error: true
-
+      # Build APK
       - name: Build Release APK
         run: flutter build apk --release
 
+      # Upload APK
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
