@@ -1,4 +1,4 @@
-
+import 'screens/auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -35,11 +35,38 @@ class KautharSchoolApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFF5F8FA),
         fontFamily: 'Arial',
       ),
-      home: const HomePage(),
+      home: const AuthGate(),
     );
   }
 }
+class AuthGate extends StatelessWidget {
+  const AuthGate({super.key});
 
+  @override
+  Widget build(BuildContext context) {
+    final auth = Supabase.instance.client.auth;
+
+    return StreamBuilder<AuthState>(
+      stream: auth.onAuthStateChange,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData &&
+            auth.currentSession == null) {
+          return const AuthScreen();
+        }
+
+        final session = snapshot.hasData
+            ? snapshot.data!.session
+            : auth.currentSession;
+
+        if (session == null) {
+          return const AuthScreen();
+        }
+
+        return const HomePage();
+      },
+    );
+  }
+}
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
