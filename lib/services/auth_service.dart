@@ -7,14 +7,20 @@ class AuthService {
 
   // تسجيل مستخدم جديد
   static Future<AuthResponse> register({
-    required String phone,
-    required String password,
-  }) async {
-    return await _supabase.auth.signUp(
-      phone: phone,
-      password: password,
-    );
-  }
+  required String phone,
+  required String password,
+  required String fullName,
+}) async {
+  final response = await _supabase.auth.signUp(
+    phone: phone,
+    password: password,
+    data: {
+      'full_name': fullName,
+    },
+  );
+
+  return response;
+}
 
   // تسجيل الدخول
   static Future<AuthResponse> login({
