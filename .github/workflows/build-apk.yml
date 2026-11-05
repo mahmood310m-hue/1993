@@ -7,52 +7,51 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   build:
+    name: Build Android APK
     runs-on: ubuntu-latest
 
     steps:
+      # تحميل المشروع
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-
+      # تثبيت Flutter بإصدار حديث
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.47.9'
+          flutter-version: '3.44.0'
           channel: stable
           cache: true
 
-      - name: Check Flutter and Dart Versions
+      # التحقق من إصدارات Flutter و Dart
+      - name: Check Flutter and Dart
         run: |
           flutter --version
           dart --version
 
-      - name: Create Android Platform If Missing
-        run: |
-          if [ ! -d android ]; then
-            flutter create --platforms=android \
-              --org com.kauthar.school \
-              --project-name kauthar_school .
-          fi
-
+      # تثبيت الحزم
       - name: Get Dependencies
         run: flutter pub get
 
-      - name: Build Release APK
-        run: |
-          flutter build apk --release \
-            --dart-define=SUPABASE_URL="${{ secrets.SUPABASE_URL }}" \
-            --dart-define=SUPABASE_ANON_KEY="${{ secrets.SUPABASE_ANON_KEY }}"
+      # فحص المشروع
+      - name: Analyze Project
+        run: flutter analyze
+        continue-on-error: true
 
-      - name: Upload APK
+      # بناء APK
+      - name: Build Release APK
+        run: flutter build apk --release
+
+      # حفظ ملف APK كملف قابل للتنزيل
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Kauthar-School-APK
           path: build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
+          retention-days: 30
