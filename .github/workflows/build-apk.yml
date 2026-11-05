@@ -8,47 +8,40 @@ on:
       - main
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
-    name: Build Android APK
+    name: Build Kauthar School APK
     runs-on: ubuntu-latest
 
     steps:
-      # تحميل المشروع
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # تثبيت Flutter بإصدار حديث
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.44.0'
           channel: stable
           cache: true
 
-      # التحقق من إصدارات Flutter و Dart
-      - name: Check Flutter and Dart
+      - name: Check Flutter and Dart Versions
         run: |
           flutter --version
           dart --version
+          dart --version | grep -E 'Dart SDK version: 3\.(1[3-9]|[2-9][0-9])\.'
 
-      # تثبيت الحزم
       - name: Get Dependencies
         run: flutter pub get
 
-      # فحص المشروع
       - name: Analyze Project
         run: flutter analyze
         continue-on-error: true
 
-      # بناء APK
       - name: Build Release APK
         run: flutter build apk --release
 
-      # حفظ ملف APK كملف قابل للتنزيل
-      - name: Upload APK Artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Kauthar-School-APK
