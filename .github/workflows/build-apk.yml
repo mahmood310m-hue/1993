@@ -1,5 +1,5 @@
 
-name: Build School APK
+name: Build Kauthar School APK
 
 on:
   workflow_dispatch:
@@ -25,13 +25,17 @@ jobs:
       - name: Check Flutter
         run: flutter --version
 
-      - name: Generate Android Platform
-        run: flutter create --platforms=android --project-name kauthar_school .
+      - name: Recreate Android Platform
+        run: |
+          rm -rf android
+          flutter create --platforms=android \
+            --org com.kauthar.school \
+            --project-name kauthar_school .
 
       - name: Get Dependencies
         run: flutter pub get
 
-      - name: Build APK
+      - name: Build Release APK
         run: |
           flutter build apk --release \
             --dart-define=SUPABASE_URL="${{ secrets.SUPABASE_URL }}" \
