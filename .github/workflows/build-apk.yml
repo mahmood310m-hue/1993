@@ -23,7 +23,7 @@ jobs:
           cache: true
 
       - name: Check Flutter
-        run: flutter --version
+        run: flutter --version '3.47.9'
 
       - name: Recreate Android Platform
         run: |
