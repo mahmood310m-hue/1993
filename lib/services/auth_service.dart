@@ -15,12 +15,34 @@ class AuthService {
     );
   }
 
+  // الاسم المستخدم في شاشة التسجيل
+  Future<AuthResponse> register({
+    required String phone,
+    required String password,
+  }) async {
+    return await signUp(
+      phone: phone,
+      password: password,
+    );
+  }
+
   // تسجيل الدخول
   Future<AuthResponse> signIn({
     required String phone,
     required String password,
   }) async {
     return await _supabase.auth.signInWithPassword(
+      phone: phone,
+      password: password,
+    );
+  }
+
+  // الاسم المستخدم في شاشة الدخول
+  Future<AuthResponse> login({
+    required String phone,
+    required String password,
+  }) async {
+    return await signIn(
       phone: phone,
       password: password,
     );
