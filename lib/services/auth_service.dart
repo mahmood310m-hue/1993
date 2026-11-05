@@ -2,10 +2,11 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthService {
-  final SupabaseClient _supabase = Supabase.instance.client;
+  static SupabaseClient get _supabase =>
+      Supabase.instance.client;
 
   // تسجيل مستخدم جديد
-  Future<AuthResponse> signUp({
+  static Future<AuthResponse> register({
     required String phone,
     required String password,
   }) async {
@@ -15,19 +16,8 @@ class AuthService {
     );
   }
 
-  // الاسم المستخدم في شاشة التسجيل
-  Future<AuthResponse> register({
-    required String phone,
-    required String password,
-  }) async {
-    return await signUp(
-      phone: phone,
-      password: password,
-    );
-  }
-
   // تسجيل الدخول
-  Future<AuthResponse> signIn({
+  static Future<AuthResponse> login({
     required String phone,
     required String password,
   }) async {
@@ -37,29 +27,39 @@ class AuthService {
     );
   }
 
-  // الاسم المستخدم في شاشة الدخول
-  Future<AuthResponse> login({
+  // الدوال القديمة للمحافظة على التوافق
+  static Future<AuthResponse> signUp({
     required String phone,
     required String password,
   }) async {
-    return await signIn(
+    return register(
+      phone: phone,
+      password: password,
+    );
+  }
+
+  static Future<AuthResponse> signIn({
+    required String phone,
+    required String password,
+  }) async {
+    return login(
       phone: phone,
       password: password,
     );
   }
 
   // تسجيل الخروج
-  Future<void> signOut() async {
+  static Future<void> signOut() async {
     await _supabase.auth.signOut();
   }
 
   // المستخدم الحالي
-  User? get currentUser {
+  static User? get currentUser {
     return _supabase.auth.currentUser;
   }
 
   // التحقق من تسجيل الدخول
-  bool get isLoggedIn {
+  static bool get isLoggedIn {
     return currentUser != null;
   }
 }
