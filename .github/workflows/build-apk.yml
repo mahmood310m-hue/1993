@@ -12,48 +12,40 @@ permissions:
 
 jobs:
   build:
-    name: Build Kauthar School APK
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      # Install Flutter with Dart 3.13.7
-      - name: Setup Flutter
+      - name: Install Flutter 3.47.9
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.47.9'
           channel: stable
-          cache: true
+          cache: false
 
-      # Verify SDK
-      - name: Check Flutter and Dart
+      - name: Verify Flutter Installation
         run: |
+          which flutter
+          which dart
           flutter --version
           dart --version
+          dart --version | grep '3.13'
 
-      # Generate missing Android files
-      - name: Generate Android Platform
+      - name: Generate Android Files
         run: |
-          flutter create \
-            --platforms=android \
-            --org com.kauthar.school \
-            --project-name kauthar_school .
+          flutter create --platforms=android --org com.kauthar.school --project-name kauthar_school .
 
-      # Install dependencies
-      - name: Get Dependencies
+      - name: Install Dependencies
         run: flutter pub get
 
-      # Build APK
-      - name: Build Release APK
+      - name: Build APK
         run: flutter build apk --release
 
-      # Upload APK
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Kauthar-School-APK
           path: build/app/outputs/flutter-apk/app-release.apk
           if-no-files-found: error
-          retention-days: 30
